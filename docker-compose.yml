@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  backend:
+    image: aimamit/djangoRestApi-React/backend
+    build: ./backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    env_file:
+      - ./backend/backend.env
+    environment:
+      - DB_HOST=db
+    command: ./run
+
+  db:
+    image: postgres:12-alpine
+    env_file:
+      - ./db.env

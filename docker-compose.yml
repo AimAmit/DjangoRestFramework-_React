@@ -2,19 +2,27 @@ version: "3"
 
 services:
   backend:
-    image: aimamit/djangoRestApi-React/backend
+    image: aimamit/djangorestapi-react/backend
     build: ./backend
+    # volumes:
+    #   - .backend/app:/app
     ports:
       - 8000:8000
     depends_on:
       - db
     env_file:
-      - ./backend/backend.env
-    environment:
-      - DB_HOST=db
-    command: ./run
+      - .env
+    command: sh run.sh
+    # command: sh -c "while true; do echo 'Press CTRL+C to stop the script execution'; done "
 
   db:
     image: postgres:12-alpine
     env_file:
-      - ./db.env
+      - .env
+    # ports:
+    #   - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

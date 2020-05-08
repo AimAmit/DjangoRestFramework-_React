@@ -2,6 +2,7 @@ env
 __pycache__
 .env
 migrations
+db.sqlite3
 
 ## frontend
 

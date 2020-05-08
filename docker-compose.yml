@@ -9,7 +9,7 @@ services:
       - static_volume:/vol/web/static
       - media_volume:/vol/web/media
     ports:
-      - 3000:3000
+      - 80:3000
     depends_on:
       - backend
       - db

@@ -1,0 +1,91 @@
+.Container {
+  width: 70%;
+  margin: 10px auto;
+  text-align: center;
+  transition: all 0.5s ease;
+}
+
+.List {
+  list-style-type: none;
+}
+.List > li {
+  margin: 5px;
+  display: inline;
+  border: 1px solid #ddd;
+  background-color: #eee;
+  border-radius: 50%;
+  padding: 5px;
+}
+.List > li:hover:after {
+  background-color: #888;
+  content: "X";
+  padding: 2px;
+  box-sizing: border-box;
+  color: #fff;
+  font-weight: 300;
+  cursor: pointer;
+}
+.Search {
+  max-height: 300px;
+  overflow: hidden;
+}
+.Search li {
+  transition: all 0.5s ease;
+  list-style: none;
+  /* visibility: hidden; */
+  opacity: 1;
+  /* display: none; */
+
+  z-index: 1;
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #ddd;
+  border-radius: 5px;
+  padding: 3px;
+  margin: 2px;
+  height: none;
+}
+.Search li:hover {
+  background-color: #f0f0f0;
+}
+
+.Tags input:focus .Search li {
+  transition: all 0.5s ease;
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+.ImageInput {
+  width: 100%;
+  display: block;
+}
+
+.ImageInput input[type="file"] {
+  /* width: 100%; */
+  box-sizing: border-box;
+  margin: 10px;
+  margin-left: 0;
+  padding: 10px;
+  display: block;
+}
+.ImageInput input:hover {
+  cursor: pointer;
+}
+.ImageInput input:focus {
+  outline: none;
+}
+
+.ImageInput img {
+  float: left;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+@media (max-width: 650px) {
+  .Container {
+    width: 95%;
+  }
+}

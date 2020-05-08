@@ -43,6 +43,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     last_login = models.DateTimeField(auto_now_add=True)
+    GENDER_CHOICES = (
+        ("M", "Male"),
+        ("F", "Female"),
+    )
+    sex = models.CharField(blank=True, null=True,
+                           max_length=1, choices=GENDER_CHOICES)
+    age = models.IntegerField(blank=True, null=True)
+    favourites = models.ManyToManyField(
+        'Recipe', related_name='user_favourites')
 
     objects = UserManager()
 
@@ -61,19 +70,30 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Tag(models.Model):
     name = models.CharField(max_length=255, unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        else:
+            return ''
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
 
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255, unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else ''
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
 
 
 class Recipe(models.Model):
@@ -90,4 +110,13 @@ class Recipe(models.Model):
     image = models.ImageField(null=True, upload_to=upload_recipe_image)
 
     def __str__(self):
-        self.title
+        return self.title if self.title else ''
+
+
+class UserFavourites(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    recipe = models.ManyToManyField(Recipe)
+
+    def __str__(self):
+        return self.favourite.title

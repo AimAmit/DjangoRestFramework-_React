@@ -1,0 +1,77 @@
+.Menu {
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 5px;
+  margin: 7px 8px;
+  padding: 4px;
+  position: fixed;
+  z-index: 200;
+  transition: all 0.3s ease;
+}
+.Menu:hover {
+  cursor: pointer;
+}
+
+.Menu span {
+  display: block;
+  width: 33px;
+  height: 4px;
+  margin-bottom: 5px;
+  margin: 4px;
+  background: #333;
+  border-radius: 3px;
+
+  transform-origin: 4px 0px;
+
+  transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1),
+    background 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
+}
+
+.Menu span:first-child {
+  transform-origin: 0% 0%;
+}
+
+.Menu span:nth-last-child(2) {
+  transform-origin: 0% 100%;
+}
+
+.Menu.active span {
+  opacity: 1;
+  transform: rotate(45deg) translate(-9px, -15px);
+  background: #232323;
+}
+
+.Menu.active span:nth-last-child(3) {
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+
+.Menu.active span:nth-last-child(2) {
+  transform: rotate(-45deg) translate(-3px, 12px);
+}
+
+.Sidedrawer {
+  height: 100%;
+  width: 300px;
+  max-width: 70%;
+  z-index: 150;
+  background-color: #222;
+  position: fixed;
+  top: 0;
+  transition: all 0.3s ease;
+}
+
+.List {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 80px;
+  list-style-type: none;
+  line-height: 2.5em;
+}
+
+.About {
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+  color: #555;
+}

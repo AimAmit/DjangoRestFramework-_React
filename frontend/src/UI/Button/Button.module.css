@@ -1,0 +1,39 @@
+.Button {
+  background-color: transparent;
+  padding: 5px 15px;
+  margin: 10px;
+  outline: none;
+  font-size: 20px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  border-radius: 6px;
+}
+.Button:focus {
+  outline: none;
+}
+
+.Success {
+  color: white;
+  background-color: #035aa6;
+}
+.Success:hover,
+.Success:focus {
+  background-color: #074c88;
+}
+
+.Danger {
+  color: white;
+  background-color: rgb(196, 15, 15);
+}
+.Danger:hover,
+.Danger:focus {
+  background-color: rgb(151, 14, 14);
+}
+
+.Disable {
+  background-color: #aaa;
+}
+.Disable:hover {
+  cursor: not-allowed;
+}

@@ -1,0 +1,35 @@
+.Auth {
+  width: 500px;
+  box-sizing: border-box;
+  border: 1px solid #eee;
+  box-shadow: 2p 2px 3px #ddd;
+  text-align: center;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: rgb(253, 252, 252);
+  border-radius: 10px;
+}
+
+/* .Auth h3 {
+  margin: 10px;
+  margin-bottom: 30px;
+} */
+
+.Auth p {
+  color: rgb(47, 88, 211);
+  margin: 10px;
+}
+.Auth p:hover {
+  text-decoration: underline;
+}
+
+.Auth form {
+  width: 100%;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .Auth {
+    width: 80%;
+  }
+}

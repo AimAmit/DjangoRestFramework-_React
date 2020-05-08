@@ -1,0 +1,154 @@
+.Container {
+  width: 80%;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.Container .Image {
+  width: 50%;
+  float: left;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.Image img {
+  width: 100%;
+  height: auto;
+}
+
+.Details {
+  width: 50%;
+  float: right;
+  text-align: left;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.Details p {
+  font-size: 18px;
+}
+.Details div {
+  padding: 10px;
+}
+
+.Tags {
+  margin: auto 10px;
+  padding: 0;
+}
+.Tags hr {
+  margin: 0;
+  border: 1px solid #eee;
+}
+.Tags ul {
+  padding: 0px;
+}
+.Tags li {
+  list-style-type: none;
+  margin: 5px;
+  padding: 10px;
+  display: inline;
+}
+
+.Ingredients {
+  margin: auto 10px;
+  padding: 0;
+}
+.Ingredients hr {
+  margin: 0;
+  border: 1px solid #eee;
+}
+.Ingredients ul {
+  padding: 0px;
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
+.Ingredients li {
+  display: inline;
+  list-style-type: none;
+  margin: 10px;
+  padding: 10px;
+}
+
+.Details a {
+  color: rgb(233, 81, 81);
+}
+.Details a:hover {
+  color: brown;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .Container {
+    width: 95%;
+  }
+  .Container .Image {
+    width: 100%;
+    height: auto;
+    float: none;
+  }
+
+  .Details {
+    width: 80%;
+    text-align: left;
+    float: none;
+  }
+}
+
+.heart {
+  display: inline-block;
+  height: 25px;
+  margin: 0 10px;
+  position: relative;
+  top: 0;
+  transform: rotate(-45deg);
+  width: 25px;
+}
+
+.heart:before,
+.heart:after {
+  content: "";
+  border-radius: 50%;
+  height: 25px;
+  position: absolute;
+  width: 25px;
+}
+
+.heart:before {
+  top: -15px;
+  left: 0;
+}
+
+.heart:after {
+  left: 15px;
+  top: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: rotate(-90deg);
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+    transform: scale(1);
+  }
+}
+.heart_active,
+.heart_active:before,
+.heart_active:after {
+  animation: pulse 0.5s ease;
+  background-color: rgb(175, 10, 10);
+  transition: all 0.3s ease;
+}
+
+.heart_inactive,
+.heart_inactive:before,
+.heart_inactive:after {
+  animation: pulse 0.5s ease;
+  background-color: darkgray;
+  transition: all 0.3s ease;
+}

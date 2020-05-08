@@ -1,0 +1,11 @@
+.Container {
+  width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .Container {
+    width: 90%;
+  }
+}

@@ -48,7 +48,7 @@ export const authSignin = (name, email, password, signin) => dispatch => {
         user = { name: name, email: email, password: password }
         axios
             .post('api/user/create/', user)
-            .then(res => dispatch(authSigninSuccess(res.data.token, parseInt(res.token.user.id))))
+            .then(res => dispatch(authSigninSuccess(res.data.token, parseInt(res.data.user.id))))
             .catch(err => dispatch(authSigninFail(err.response.data)))
     }
     else {

@@ -6,6 +6,7 @@ import * as actions from '../../../store/actions'
 const Logout = React.memo(props => {
 
     useEffect(() => {
+        props.userDetailsReset()
         const timer = setTimeout(() => props.logoutHandler(), 500)
 
         return () => {
@@ -28,7 +29,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => {
     return {
-        logoutHandler: () => dispatch(actions.authLogout())
+        logoutHandler: () => dispatch(actions.authLogout()),
+        userDetailsReset: () => dispatch(actions.userDetailsReset()),
+
     }
 }
 

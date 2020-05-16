@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import axios from 'axios'
+import axios from '../../../axios-api'
 
 import classes from './CreateRecipe.module.css'
 import Input from '../../../UI/Input/Input'
@@ -150,16 +150,18 @@ const CreateRecipe = React.memo(props => {
     }, [props.ingredientsArray])
 
     const addSearchItemsOnClick = (type, value) => {
-
+        if (value.id == 'error') return;
         if (type === 'tag') {
             if (value.id === -1)
                 props.tagCreate(tag)
             else props.tagAdd(value)
+            setTag('')
         }
         else {
             if (value.id === -1)
                 props.ingredientCreate(ingredient)
             else props.ingredientAdd(value)
+            setIngredient('')
         }
     }
 
@@ -169,12 +171,12 @@ const CreateRecipe = React.memo(props => {
     useEffect(() => {
         const timer = setTimeout(() => {
             axios
-                .get(`http://127.0.0.1:8000/api/recipe/tags/?search=${tag}`)
+                .get(`api/recipe/tags/?search=${tag}`)
                 .then(res => {
                     setTagsSearchList(prevState => [prevState[0], ...res.data])
                 })
                 .catch(err => {
-                    setTagsSearchList(prevState => [prevState[0], { key: 'error', name: 'Something went wrong' }])
+                    setTagsSearchList(prevState => [prevState[0], { id: 'error', name: 'Something went wrong' }])
                 })
         }, 300)
         return () => {
@@ -185,12 +187,12 @@ const CreateRecipe = React.memo(props => {
     useEffect(() => {
         const timer = setTimeout(() => {
             axios
-                .get(`http://127.0.0.1:8000/api/recipe/ingredients/?search=${ingredient}`)
+                .get(`api/recipe/ingredients/?search=${ingredient}`)
                 .then(res => {
                     setIngredientsSearchList(prevState => [prevState[0], ...res.data])
                 })
                 .catch(err => {
-                    setIngredientsSearchList(prevState => [prevState[0], { key: 'error', name: 'Something went wrong' }])
+                    setIngredientsSearchList(prevState => [prevState[0], { id: 'error', name: 'Something went wrong' }])
                 })
         }, 300)
         return () => {

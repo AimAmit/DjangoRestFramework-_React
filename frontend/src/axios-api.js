@@ -1,17 +1,12 @@
 import axios from 'axios'
 
-const token = sessionStorage.getItem('token')
+let header = sessionStorage.getItem('token') ?
+    { Authorization: `Token ${sessionStorage.getItem('token')}` } : null
 
 let instance = axios.create({
-    baseURL: '/'
+    baseURL: '/',
+    headers: header
 })
 
-if (token)
-    instance = axios.create({
-        baseURL: '/',
-        headers: {
-            Authorization: `Token ${token}`
-        }
-    })
 
 export default instance

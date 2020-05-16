@@ -106,6 +106,7 @@ const User = React.memo(props => {
     const submitButtonHandler = () => {
         const email = props.userDetails ? props.userDetails.email : null
         const user = {
+            email: email,
             name: name,
             age: age === '' ? null : +age,
             sex: gender,

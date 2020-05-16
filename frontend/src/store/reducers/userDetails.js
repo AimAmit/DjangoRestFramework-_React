@@ -33,6 +33,10 @@ const reducer = (state = initialStates, action) => {
             return {
                 ...state,
                 createResponse: null,
+                userDetails: null,
+                tags: [],
+                ingredients: [],
+                recipes: [],
             }
 
 

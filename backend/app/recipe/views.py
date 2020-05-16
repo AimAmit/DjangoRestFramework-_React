@@ -77,11 +77,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     authentication_classes = (authentication.TokenAuthentication,)
 
     def retrieve(self, request, *args, **kwargs):
-        fav = self.queryset.filter(
-            user_favourites=self.request.user, id=self.kwargs['pk']).exists()
+        fav = False
+        if not self.request.user.is_anonymous:
+            fav = self.queryset.filter(
+                user_favourites=self.request.user, id=self.kwargs['pk']).exists()
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return Response({**serializer.data, 'favourites': fav, })
+        return Response({**serializer.data, 'favourites': fav})
 
     def query_params_to_ints(self, qs):
         return [int(id) for id in qs.split(',')]

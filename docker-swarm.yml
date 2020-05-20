@@ -1,0 +1,82 @@
+version: "3.5"
+
+services:
+  frontend:
+    image: aimamit/djangorestapi_react_frontend
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - static_volume:/vol/web/static
+      - media_volume:/vol/web/media
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+      - db
+    networks:
+      - frontend_net
+      - backend_net
+
+  backend:
+    image: aimamit/djangorestapi_react_backend
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    command: ./run.sh
+    ports:
+      - 8000:8000
+    volumes:
+      - static_volume:/vol/web/static
+      - media_volume:/vol/web/media
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - backend_net
+      - frontend_net
+
+  db:
+    image: postgres:12-alpine
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend_net
+
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  backend_net:
+  frontend_net:
+
+volumes:
+  pgdata:
+  static_volume:
+  media_volume:

@@ -3,8 +3,18 @@ from rest_framework.response import Response
 from rest_framework import viewsets, mixins, filters
 from rest_framework import permissions, authentication, status
 
+# from django.utils.decorators import method_decorator
+# from django.views.decorators.cache import cache_page
+# from django.views.decorators.vary import vary_on_cookie
+# from django.core.cache import cache
+import json
+from django_redis import get_redis_connection
+
 from recipe import serializers
 from core.models import Tag, Ingredient, Recipe, User
+
+
+cache = get_redis_connection('default')
 
 
 class IsAuthenticatedOrReadOnly(permissions.BasePermission):
@@ -62,12 +72,39 @@ class TagViewSet(BaseListViewSet, BaseCreateViewSet):
     search_fields = ['name']
     filter_backends = (filters.SearchFilter,)
 
+    def list(self, request, *args, **kwargs):
+        data = cache.get('all_tags')
+        if not data:
+            data = serializers.TagSerializer(Tag.objects.all(), many=True).data
+            cache.set('all_tags', json.dumps(data), 60*60*2)
+        else:
+            data = json.loads(data)
+        return Response(data)
+
+    def perform_create(self, serializer):
+        cache.delete('all_tags')
+        serializer.save(user=self.request.user)
+
 
 class IngredientViewSet(BaseListViewSet, BaseCreateViewSet):
     serializer_class = serializers.IngredientSerializer
     queryset = Ingredient.objects.all()
     search_fields = ['name']
     filter_backends = (filters.SearchFilter,)
+
+    def list(self, request, *args, **kwargs):
+        data = cache.get('all_ingredients')
+        if not data:
+            data = serializers.IngredientSerializer(
+                Ingredient.objects.all(), many=True).data
+            cache.set('all_ingredients', json.dumps(data), 60*60*2)
+        else:
+            data = json.loads(data)
+        return Response(data)
+
+    def perform_create(self, serializer):
+        cache.delete('all_ingredients')
+        serializer.save(user=self.request.user)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -76,20 +113,47 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     authentication_classes = (authentication.TokenAuthentication,)
 
+    def list(self, request, *args, **kwargs):
+        data = cache.get('all_recipes')
+        if not data:
+            data = serializers.RecipeSerializer(
+                Recipe.objects.all(), many=True).data
+            cache.set('all_recipes', json.dumps(data), 60*60*2)
+        else:
+            data = json.loads(data)
+        return Response(data)
+
     def retrieve(self, request, *args, **kwargs):
         fav = False
         if not self.request.user.is_anonymous:
             fav = self.queryset.filter(
                 user_favourites=self.request.user, id=self.kwargs['pk']).exists()
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response({**serializer.data, 'favourites': fav})
+
+        recipe = cache.get('recipe_'+self.kwargs['pk'])
+        if not recipe:
+            instance = self.get_object()
+            recipe = self.get_serializer(instance).data
+            cache.set('recipe_'+self.kwargs['pk'], json.dumps(recipe), 60*60*2)
+        else:
+            recipe = json.loads(recipe)
+        return Response({**recipe, 'favourites': fav})
 
     def query_params_to_ints(self, qs):
         return [int(id) for id in qs.split(',')]
 
     def perform_create(self, serializer):
+        cache.delete('all_recipes')
         serializer.save(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        cache.delete('all_recipes')
+        cache.delete('recipe_'+self.kwargs['pk'])
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        cache.delete('all_recipes')
+        cache.delete('recipe_'+self.kwargs['pk'])
+        return super().destroy(request, *args, **kwargs)
 
     def get_serializer_class(self):
 

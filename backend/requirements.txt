@@ -7,3 +7,5 @@ Pillow>=7.1.0,<8
 
 django-cors-headers
 gunicorn>=20.0.4,<21
+
+django-redis>=4.1.0,<4.2

@@ -38,12 +38,22 @@ services:
       - static_volume:/vol/web/static
       - media_volume:/vol/web/media
     depends_on:
-      - db
+      - redis
     env_file:
       - .env
     networks:
       - backend_net
       - frontend_net
+
+  redis:
+    image: redis:6.0.3-alpine
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - db
+    networks:
+      - backend_net
 
   db:
     image: postgres:12-alpine

@@ -2,7 +2,6 @@ env
 __pycache__
 migrations
 *.sqlite3
-
 ## frontend
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.

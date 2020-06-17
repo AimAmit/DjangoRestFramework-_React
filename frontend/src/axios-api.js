@@ -5,8 +5,13 @@ let header = sessionStorage.getItem('token') ?
 
 let instance = axios.create({
     baseURL: '/',
-    headers: header
 })
 
+instance.interceptors.request.use(config => {
+    const token = sessionStorage.getItem('token')
+
+    config.headers.Authorization = token ? `Token ${token}` : ''
+    return config
+})
 
 export default instance

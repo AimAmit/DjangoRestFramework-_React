@@ -7,14 +7,15 @@ import * as actions from '../../store/actions'
 import Spinner from '../../UI/Spinner/Spinner'
 
 export const UserInfo = React.memo(props => {
-    const [showTags, setShowTags] = useState(false)
-    const [showIngredients, setShowIngredients] = useState(false)
-    const [showRecipes, setShowRecipes] = useState(false)
-    const [showFavourites, setShowFavourites] = useState(false)
+    const [showTags, setShowTags] = useState(true)
+    const [showIngredients, setShowIngredients] = useState(true)
+    const [showRecipes, setShowRecipes] = useState(true)
+    const [showFavourites, setShowFavourites] = useState(true)
 
     const tagListButtonHandler = () => {
+        if (showTags && (!props.tags.length || props.tagsError))
+            props.userTagsFetch()
         setShowTags(prevState => !prevState)
-        if (!props.tags.length) props.userTagsFetch()
     }
     let tagList = props.tags.map(tag => (
         <li key={tag.id} >
@@ -26,8 +27,9 @@ export const UserInfo = React.memo(props => {
     if (props.tagsLoading) tagList = <Spinner />
 
     const ingredientListButtonHandler = () => {
+        if (showIngredients && (!props.ingredients.length || props.ingredientsError))
+            props.userIngredientsFetch()
         setShowIngredients(prevState => !prevState)
-        if (!props.ingredients.length) props.userIngredientsFetch()
     }
     let ingredientList = props.ingredients.map(ingredient => (
         <li key={ingredient.id} >
@@ -41,8 +43,9 @@ export const UserInfo = React.memo(props => {
         props.history.push('/recipe', id)
     }
     const recipeListButtonHandler = () => {
+        if (showRecipes && (!props.recipes.length || props.recipesError))
+            props.userRecipesFetch()
         setShowRecipes(prevState => !prevState)
-        if (!props.recipes.length) props.userRecipesFetch()
     }
     let recipeList = props.recipes.map(recipe => (
         <li key={recipe.id} onClick={() => recipeClickHandler(recipe.id)} >
@@ -53,8 +56,9 @@ export const UserInfo = React.memo(props => {
     if (props.recipesLoading) recipeList = <Spinner />
 
     const favouriteListButtonHandler = () => {
+        if (showFavourites && (!props.fetchFavouriteRecipes.length || props.fetchFavouriteRecipesError))
+            props.userFavouritesFetch()
         setShowFavourites(prevState => !prevState)
-        if (!props.fetchFavouriteRecipes.length) props.userFavouritesFetch()
     }
     let favouriteList = props.fetchFavouriteRecipes.map(recipe => (
         <li key={recipe.id} onClick={() => recipeClickHandler(recipe.id)} >
@@ -71,41 +75,41 @@ export const UserInfo = React.memo(props => {
             </div>
 
             <div onClick={favouriteListButtonHandler}>
-                Your favourites
-                <img className={!showFavourites ? classes.RotateCC : classes.RotateC}
+                Your Favourites
+                <img className={showFavourites ? classes.RotateCC : classes.RotateC}
                     alt='arrow' src={arrow} style={{ float: 'right' }} />
             </div>
-            <ul style={{ display: showFavourites ? 'block' : 'none' }}>
+            <ul style={{ display: !showFavourites ? 'block' : 'none' }}>
                 {props.fetchFavouriteRecipesError
                     ? props.fetchFavouriteRecipesError : favouriteList}
             </ul>
 
             <div onClick={recipeListButtonHandler}>
                 Your Recipies
-                <img className={!showRecipes ? classes.RotateCC : classes.RotateC}
+                <img className={showRecipes ? classes.RotateCC : classes.RotateC}
                     alt='arrow' src={arrow} style={{ float: 'right' }} />
             </div>
-            <ul style={{ display: showRecipes ? 'block' : 'none' }}>
+            <ul style={{ display: !showRecipes ? 'block' : 'none' }}>
                 {props.recipesError ? props.recipesError : recipeList}
             </ul>
 
 
             <div onClick={ingredientListButtonHandler}>
                 Your Ingredients
-                <img className={!showIngredients ? classes.RotateCC : classes.RotateC}
+                <img className={showIngredients ? classes.RotateCC : classes.RotateC}
                     alt='arrow' src={arrow} style={{ float: 'right' }} />
             </div>
-            <ul style={{ display: showIngredients ? 'block' : 'none' }}>
+            <ul style={{ display: !showIngredients ? 'block' : 'none' }}>
                 {props.ingredientsError ? props.ingredientsError : ingredientList}
             </ul>
 
 
             <div onClick={tagListButtonHandler}>
                 Your Tags
-                <img className={!showTags ? classes.RotateCC : classes.RotateC}
+                <img className={showTags ? classes.RotateCC : classes.RotateC}
                     alt='arrow' src={arrow} style={{ float: 'right' }} />
             </div>
-            <ul style={{ display: showTags ? 'block' : 'none' }}>
+            <ul style={{ display: !showTags ? 'block' : 'none' }}>
                 {props.tagsError ? props.tagsError : tagList}
             </ul>
         </div>

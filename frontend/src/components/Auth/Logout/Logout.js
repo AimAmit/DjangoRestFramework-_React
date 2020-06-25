@@ -17,7 +17,7 @@ const Logout = React.memo(props => {
 
 
     return (
-        <div style={{ margin: '10px auto', textAlign: 'center' }}>
+        <div style={{ margin: '10px auto', textAlign: 'center', fontWeight: 'bold' }}>
             Logging out.....
         </div>
     )

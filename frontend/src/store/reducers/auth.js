@@ -5,7 +5,11 @@ const initialState = {
     error: null,
     loggedIn: false,
     token: null,
-    userId: null
+    tokenRefresh: null,
+
+    userId: null,
+    tokenExp: null,
+    refreshExp: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -20,10 +24,13 @@ const reducer = (state = initialState, action) => {
         case actionTypes.AUTH_SIGNIN_SUCCESS:
             return {
                 ...state,
-                isLoading: false,
                 loggedIn: true,
+                isLoading: false,
                 token: action.token,
-                userId: action.userId
+                userId: action.userId,
+                tokenRefresh: action.tokenRefresh,
+                tokenExp: action.tokenExp,
+                refreshExp: action.refreshExp
             }
 
         case actionTypes.AUTH_SIGNIN_FAIL:
@@ -38,7 +45,10 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 loggedIn: false,
                 token: null,
-                userId: null
+                tokenRefresh: null,
+                userId: null,
+                tokenExp: null,
+                refreshExp: null
             }
 
         case actionTypes.AUTH_AUTO_LOGIN:
@@ -46,7 +56,10 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 loggedIn: true,
                 token: action.token,
-                userId: action.userId
+                userId: action.userId,
+                tokenRefresh: action.tokenRefresh,
+                tokenExp: action.tokenExp,
+                refreshExp: action.refreshExp
             }
 
 

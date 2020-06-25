@@ -1,12 +1,9 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, mixins, filters
-from rest_framework import permissions, authentication, status
+from rest_framework import permissions, status, exceptions
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# from django.utils.decorators import method_decorator
-# from django.views.decorators.cache import cache_page
-# from django.views.decorators.vary import vary_on_cookie
-# from django.core.cache import cache
 import json
 from django_redis import get_redis_connection
 
@@ -51,8 +48,11 @@ class BaseListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         if assigned_only:
             queryset = queryset.filter(recipe__isnull=False)
 
-        if self.request.user.is_authenticated and mine:
-            return queryset.filter(user=self.request.user).distinct()
+        if mine:
+            if self.request.user.is_authenticated:
+                return queryset.filter(user=self.request.user)
+            else:
+                return Response(data="Not authorized", status=status.HTTP_401_UNAUTHORIZED)
 
         return queryset.order_by('name')
 
@@ -60,7 +60,7 @@ class BaseListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 class BaseCreateViewSet(viewsets.GenericViewSet,
                         mixins.CreateModelMixin):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
@@ -73,6 +73,31 @@ class TagViewSet(BaseListViewSet, BaseCreateViewSet):
     filter_backends = (filters.SearchFilter,)
 
     def list(self, request, *args, **kwargs):
+        mine = self.request.query_params.get('mine')
+        search = self.request.query_params.get('search')
+
+        if search:
+            data = cache.get('all_tags_search_'+str(search))
+            if not data:
+                data = serializers.TagSerializer(
+                    self.filter_queryset(self.queryset), many=True).data
+                cache.set('all_tags_search_' +
+                          str(search), json.dumps(data), 60*60*2)
+            else:
+                data = json.loads(data)
+            return Response(data)
+        if mine:
+            if not self.request.user.is_authenticated:
+                return Response(data="Not authorized", status=status.HTTP_401_UNAUTHORIZED)
+            data = cache.get('all_tags_user_'+str(self.request.user.id))
+            if not data:
+                data = serializers.TagSerializer(
+                    Tag.objects.all(), many=True).data
+                cache.set('all_tags_user_' +
+                          str(self.request.user.id), json.dumps(data), 60*60*2)
+            else:
+                data = json.loads(data)
+            return Response(data)
         data = cache.get('all_tags')
         if not data:
             data = serializers.TagSerializer(Tag.objects.all(), many=True).data
@@ -93,6 +118,31 @@ class IngredientViewSet(BaseListViewSet, BaseCreateViewSet):
     filter_backends = (filters.SearchFilter,)
 
     def list(self, request, *args, **kwargs):
+        mine = self.request.query_params.get('mine')
+        search = self.request.query_params.get('search')
+
+        if search:
+            data = cache.get('all_ingredients_search_'+str(search))
+            if not data:
+                data = serializers.IngredientSerializer(
+                    self.filter_queryset(self.queryset), many=True).data
+                cache.set('all_ingredients_search_' +
+                          str(search), json.dumps(data), 60*60*2)
+            else:
+                data = json.loads(data)
+            return Response(data)
+        if mine:
+            if not self.request.user.is_authenticated:
+                return Response(data="Not authorized", status=status.HTTP_401_UNAUTHORIZED)
+            data = cache.get('all_ingredients_user_'+str(self.request.user.id))
+            if not data:
+                data = serializers.TagSerializer(
+                    Tag.objects.all(), many=True).data
+                cache.set('all_ingredients_user_' +
+                          str(self.request.user.id), json.dumps(data), 60*60*2)
+            else:
+                data = json.loads(data)
+            return Response(data)
         data = cache.get('all_ingredients')
         if not data:
             data = serializers.IngredientSerializer(
@@ -111,9 +161,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
 
     def list(self, request, *args, **kwargs):
+        mine = self.request.query_params.get('mine')
+        if mine:
+            if not self.request.user.is_authenticated:
+                return Response(data="Not authorized", status=status.HTTP_401_UNAUTHORIZED)
+            data = cache.get('all_recipe_user_'+str(self.request.user.id))
+            if not data:
+                data = serializers.RecipeSerializer(
+                    Recipe.objects.all(), many=True).data
+                cache.set('all_recipe_user_' +
+                          str(self.request.user.id), json.dumps(data), 60*60*2)
+            else:
+                data = json.loads(data)
+            return Response(data)
+
         data = cache.get('all_recipes')
         if not data:
             data = serializers.RecipeSerializer(
@@ -179,8 +243,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ingredient_ids = self.query_params_to_ints(ingredients)
             queryset = queryset.filter(ingredients__id__in=ingredient_ids)
 
-        if self.request.user.is_authenticated and mine:
+        if mine and self.request.user.is_authenticated:
             return queryset.filter(user=self.request.user)
+
         return queryset.order_by('title')
 
     @action(methods=['GET', 'POST'], detail=True, url_path='upload-image')

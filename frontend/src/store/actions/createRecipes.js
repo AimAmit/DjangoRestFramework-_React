@@ -52,7 +52,7 @@ export const tagAdd = tag => {
 export const tagCreate = tag => dispatch => {
     dispatch(tagCreateStart())
     axios
-        .post('api/recipe/tags/', { name: tag })
+        .post('tags/', { name: tag })
         .then(res => dispatch(tagCreateSuccess(res.data)))
         .catch(err => dispatch(tagCreateFail(err.response.data)))
 }
@@ -91,7 +91,7 @@ export const ingredientAdd = ingredient => {
 export const ingredientCreate = ingredient => dispatch => {
     dispatch(ingredientCreateStart())
     axios
-        .post('api/recipe/ingredients/', { name: ingredient })
+        .post('ingredients/', { name: ingredient })
         .then(res => dispatch(ingredientCreateSuccess(res.data)))
         .catch(err => dispatch(ingredientCreateFail(err.response.data)))
 }
@@ -121,7 +121,7 @@ export const recipeUploadImage = (id, image) => dispatch => {
     formData.append("image", image);
 
     axios
-        .post(`api/recipe/recipes/${id}/upload-image/`, formData, {
+        .post(`recipes/${id}/upload-image/`, formData, {
             headers: {
                 'Content-type': 'multipart/form-data',
             }
@@ -155,7 +155,7 @@ export const recipeCreate = (recipe, patch, image) => dispatch => {
 
     if (patch) {
         axios
-            .patch(`api/recipe/recipes/${recipe.id}/`, recipe)
+            .patch(`recipes/${recipe.id}/`, recipe)
             .then(res => {
                 dispatch(recipeCreateSuccess(res.data))
                 if (image) dispatch(recipeUploadImage(res.data.id, image))
@@ -165,7 +165,7 @@ export const recipeCreate = (recipe, patch, image) => dispatch => {
 
     else {
         axios
-            .post('api/recipe/recipes/', recipe)
+            .post('recipes/', recipe)
             .then(res => {
                 dispatch(recipeCreateSuccess(res.data))
                 if (image) dispatch(recipeUploadImage(res.data.id, image))

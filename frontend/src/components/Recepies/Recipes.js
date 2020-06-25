@@ -14,7 +14,7 @@ const Recipes = React.memo(props => {
     }, [])
 
     const onRecipeClickHandler = id => {
-        props.history.push('/recipe', id)
+        props.history.push('/recipe/' + id)
 
     }
     let recipesList = null

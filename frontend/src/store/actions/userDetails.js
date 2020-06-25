@@ -23,7 +23,7 @@ const userTagsFetchFail = error => {
 export const userTagsFetch = () => dispatch => {
     dispatch(userTagsFetchStart())
     axios
-        .get('api/recipe/tags/?mine=1')
+        .get('tags/?mine=1')
         .then(res => dispatch(userTagsFetchSuccess(res.data)))
         .catch(err => dispatch(userTagsFetchFail(err.response.data)))
 }
@@ -51,7 +51,7 @@ const userIngredientsFetchFail = error => {
 export const userIngredientsFetch = () => dispatch => {
     dispatch(userIngredientsFetchStart())
     axios
-        .get('api/recipe/ingredients/?mine=1')
+        .get('ingredients/?mine=1')
         .then(res => dispatch(userIngredientsFetchSuccess(res.data)))
         .catch(err => dispatch(userIngredientsFetchFail(err.response.data)))
 }
@@ -78,7 +78,7 @@ const userRecipesFetchFail = error => {
 export const userRecipesFetch = () => dispatch => {
     dispatch(userRecipesFetchStart())
     axios
-        .get('api/recipe/recipes/?mine=1')
+        .get('recipes/?mine=1')
         .then(res => dispatch(userRecipesFetchSuccess(res.data)))
         .catch(err => dispatch(userRecipesFetchFail(err.response.data)))
 }
@@ -105,7 +105,7 @@ const userFavouritesFetchFail = error => {
 export const userFavouritesFetch = () => dispatch => {
     dispatch(userFavouritesFetchStart())
     axios
-        .get('api/user/recipes/')
+        .get('user/recipes/')
         .then(res => dispatch(userFavouritesFetchSuccess(res.data.favourites)))
         .catch(err => dispatch(userFavouritesFetchFail(err.response.data)))
 }
@@ -126,7 +126,7 @@ const userFavouritesCreateFail = error => {
 }
 export const userFavouritesCreate = recipeId => dispatch => {
     axios
-        .patch(`api/user/recipes/`, { favourites: [{ 'id': recipeId }] })
+        .patch(`user/recipes/`, { favourites: [{ "id": recipeId }] })
         .then(res => dispatch(userFavouritesCreateSuccess()))
         .catch(err => dispatch(userFavouritesCreateFail(err.response.data)))
 }
@@ -152,7 +152,7 @@ const userDetailsFetchFail = error => {
 export const userDetailsFetch = () => disptach => {
     disptach(userDetailsFetchStart())
     axios
-        .get('api/user/me/')
+        .get('user/me/')
         .then(res => disptach(userDetailsFetchSuccess(res.data)))
         .catch(err => disptach(userDetailsFetchFail(err.response.data.message)))
 }
@@ -178,7 +178,7 @@ const userDetailsCreateFail = error => {
 export const userDetailsCreate = user => disptach => {
     disptach(userDetailsCreateStart())
     axios
-        .patch('api/user/me/', user)
+        .patch('user/me/', user)
         .then(res => disptach(userDetailsCreateSuccess(res.data)))
         .catch(err => disptach(userDetailsCreateFail(err.response.data)))
 }

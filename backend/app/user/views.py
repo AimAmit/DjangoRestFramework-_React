@@ -1,10 +1,10 @@
-from rest_framework import generics, permissions, authentication, status, viewsets, mixins
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.settings import api_settings
-from rest_framework.authtoken.models import Token
+from rest_framework import generics, permissions, viewsets, mixins
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 from user import serializers
 
@@ -18,26 +18,16 @@ class CreateUserView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
         headers = self.get_success_headers(serializer.data)
-        token, created = Token.objects.get_or_create(user=serializer.instance)
-        return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
-
-
-class CreateTokenView(ObtainAuthToken):
-    serializer_class = serializers.AuthTokenSerializer
-    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
-
-    def post(self, request, *args, **kwargs):
-        response = super(CreateTokenView, self).post(
-            request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+        refresh = RefreshToken.for_user(user=serializer.instance)
+        return Response({'access': str(refresh.access_token), 'refresh': str(refresh), 'user': serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
 
     def get_object(self):
         return self.request.user
@@ -47,7 +37,7 @@ class UserFavouriteRecipeView(generics.RetrieveUpdateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = serializers.UserFavouriteRecipeSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
 
     def get_object(self):
         return self.request.user

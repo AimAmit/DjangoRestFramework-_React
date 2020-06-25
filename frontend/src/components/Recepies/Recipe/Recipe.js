@@ -11,33 +11,36 @@ const Recipe = React.memo(props => {
     const { recipe } = props
     const [renderRecipe, setRenderRecipe] = useState(null)
     const [favourites, setFavourites] = useState(false)
+    const [recipeId, setRecipeId] = useState(null)
+
 
     useEffect(() => {
-        props.recipeFetch(props.location.state)
-        props.recipeImageFetch(props.location.state)
-    }, [props.location.state])
+        setRecipeId(props.match.params.id)
+
+    }, [props.match.params.id])
+
+    useEffect(() => {
+        if (recipeId) props.recipeFetch(recipeId)
+    }, [recipeId])
 
     const editButtonClickHandler = () => {
         props.history.push('/createRecipe', recipe)
     }
 
     const deleteButtonClickHandler = () => {
-        props.recipeDelete(props.location.state)
+        props.recipeDelete(recipeId)
         props.history.goBack('/', null)
     }
 
     const toggleFavouritesHandler = () => {
         setFavourites(prev => !prev)
-        props.userFavouritesCreate(props.location.state)
+        props.userFavouritesCreate(+recipeId)
     }
 
     let recipeData = null
     let tagList = null
     let ingredientList = null
     let Image = null
-
-    const currentUser = sessionStorage.getItem('userId')
-
 
 
     useEffect(() => {
@@ -47,9 +50,10 @@ const Recipe = React.memo(props => {
     }, [recipe])
 
     useEffect(() => {
-        if (props.imageLoading) Image = <Spinner />
-        else if (props.imageError) Image = props.imageError
-        else if (props.image && props.image.image) Image = <img src={props.image.image} alt='Recipe' />
+        // if (props.imageLoading) Image = <Spinner />
+        // else if (props.imageError) Image = props.imageError
+        // else 
+        if (recipe && recipe.image) Image = <img src={recipe.image} alt='Recipe' />
         else Image = <img src={DefaultImage} alt='Default' />
 
         if (recipe) {
@@ -105,7 +109,7 @@ const Recipe = React.memo(props => {
                                     </div>
                                 ) : null}
 
-                        {currentUser == recipe.user.id
+                        {props.currentUser == recipe.user.id
                             ?
                             <div>
                                 <Button buttontype='success' onClick={editButtonClickHandler} >Edit</Button>
@@ -150,6 +154,7 @@ const mapStateToProps = state => {
         imageLoading: state.recipe.imageLoading,
 
         loggedin: state.auth.loggedIn,
+        currentUser: state.auth.userId,
 
         createFavouriteRecipeError: state.recipe.createFavouriteRecipeError,
     }
@@ -159,7 +164,6 @@ const mapDispatchToprops = dispatch => {
     return {
         recipeFetch: (id) => dispatch(actions.recipeFetch(id)),
         recipeDelete: (id) => dispatch(actions.recipeDelete(id)),
-        recipeImageFetch: (id) => dispatch(actions.recipeImageFetch(id)),
 
         userFavouritesCreate: (id) => dispatch(actions.userFavouritesCreate(id))
     }

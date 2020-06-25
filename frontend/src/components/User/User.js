@@ -115,8 +115,6 @@ const User = React.memo(props => {
         props.userDetailsCreate(user)
     }
 
-    if (props.createResponse) props.history.goBack()
-
     let inputArea = (
         <Fragment>
             <Input value={name} setValue={setName} validForm={validForm} {...inputConfig.name} />

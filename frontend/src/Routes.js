@@ -17,15 +17,14 @@ const Routes = props => {
             <Route path='/user' component={UserInfo} />
             <Route path='/logout' component={Logout} />
             <Route path='/userDetail' component={User} />
-            <Route path='/recipe' exact component={Recipe} />
+            <Route path='/recipe/:id' component={Recipe} />
             <Route path='/createRecipe' component={CreateRecipe} />
             <Route path='/' component={Recipes} />
         </Switch>
         :
         <Switch>
             <Route path='/auth' component={Auth} />
-            <Route path='/recipe' component={Recipe} />
-            <Route path='/createRecipe' component={CreateRecipe} />
+            <Route path='/recipe/:id' component={Recipe} />
             <Route path='/' component={Recipes} />
         </Switch>
 

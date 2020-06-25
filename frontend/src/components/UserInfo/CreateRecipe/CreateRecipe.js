@@ -171,7 +171,7 @@ const CreateRecipe = React.memo(props => {
     useEffect(() => {
         const timer = setTimeout(() => {
             axios
-                .get(`api/recipe/tags/?search=${tag}`)
+                .get(`/tags/?search=${tag}`)
                 .then(res => {
                     setTagsSearchList(prevState => [prevState[0], ...res.data])
                 })
@@ -187,7 +187,7 @@ const CreateRecipe = React.memo(props => {
     useEffect(() => {
         const timer = setTimeout(() => {
             axios
-                .get(`api/recipe/ingredients/?search=${ingredient}`)
+                .get(`/ingredients/?search=${ingredient}`)
                 .then(res => {
                     setIngredientsSearchList(prevState => [prevState[0], ...res.data])
                 })

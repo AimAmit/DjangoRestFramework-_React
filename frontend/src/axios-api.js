@@ -22,7 +22,6 @@ const refreshAuthLogic = failedRequest => axios
     .catch(err => {
         console.log(err.response.data);
         window.location = "logout";
-        // actions.authLogout()
     })
 
 // Instantiate the interceptor (you can chain it as it returns the axios instance)

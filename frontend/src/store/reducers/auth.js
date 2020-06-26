@@ -8,7 +8,6 @@ const initialState = {
     tokenRefresh: null,
 
     userId: null,
-    tokenExp: null,
     refreshExp: null
 }
 
@@ -29,7 +28,6 @@ const reducer = (state = initialState, action) => {
                 token: action.token,
                 userId: action.userId,
                 tokenRefresh: action.tokenRefresh,
-                tokenExp: action.tokenExp,
                 refreshExp: action.refreshExp
             }
 
@@ -47,7 +45,6 @@ const reducer = (state = initialState, action) => {
                 token: null,
                 tokenRefresh: null,
                 userId: null,
-                tokenExp: null,
                 refreshExp: null
             }
 
@@ -58,7 +55,6 @@ const reducer = (state = initialState, action) => {
                 token: action.token,
                 userId: action.userId,
                 tokenRefresh: action.tokenRefresh,
-                tokenExp: action.tokenExp,
                 refreshExp: action.refreshExp
             }
 

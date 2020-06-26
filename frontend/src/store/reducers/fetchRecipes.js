@@ -3,7 +3,7 @@ import * as actionTypes from '../actions/actionTypes'
 const initialState = {
     recipes: [],
     recipesLoading: false,
-    recipesError: false,
+    recipesError: null,
 
     recipe: null,
     recipeLoading: false,
@@ -24,6 +24,7 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.RECIPES_FETCH_START:
             return {
+                ...state,
                 recipesLoading: true,
                 recipesError: null,
             }

@@ -44,14 +44,13 @@ const authSigninSuccess = (token, tokenRefresh) => {
     localStorage.setItem('token', token)
     localStorage.setItem('token_refresh', tokenRefresh)
 
-    let jwtPayload = getPayloadFromToken(token)
+    const jwtPayload = getPayloadFromToken(tokenRefresh)
     return {
         type: actionTypes.AUTH_SIGNIN_SUCCESS,
         token: token,
         tokenRefresh: tokenRefresh,
         userId: jwtPayload.user_id,
-        tokenExp: jwtPayload.exp,
-        refreshExp: getPayloadFromToken(tokenRefresh).exp
+        refreshExp: jwtPayload.exp
     }
 }
 
@@ -64,8 +63,9 @@ const authSigninFail = error => {
 }
 
 export const authAutoLogin = () => {
-    let tokenRefresh = localStorage.getItem('token_refresh')
-    let jwtPayload = getPayloadFromToken(tokenRefresh)
+    const token = localStorage.getItem('token')
+    const tokenRefresh = localStorage.getItem('token_refresh')
+    const jwtPayload = getPayloadFromToken(tokenRefresh)
 
     let refreshExp = null
     let userId = null
@@ -80,6 +80,7 @@ export const authAutoLogin = () => {
         return {
             type: actionTypes.AUTH_AUTO_LOGIN,
             userId: +userId,
+            token: token,
             tokenRefresh: tokenRefresh,
             refreshExp: refreshExp
         }
